@@ -38,3 +38,25 @@ for i, block in enumerate(prob_blocks):
 
 with open("ege_tasks_23.json", "w", encoding="utf-8") as f:
     json.dump(tasks_data, f, ensure_ascii=False, indent=4)
+
+
+def escape_markdown(text):
+    return text.replace('*', '').replace('_', '').replace('`', '')
+
+with open('ege_tasks_23.json', 'r', encoding='utf-8') as f:
+    tasks_data = json.load(f)
+
+bot_tasks = []
+for task in tasks_data:
+    text = task['question']
+    ans = task['answer']
+
+    if ans and len(ans) > 1 and "Пояснение" not in text:
+        bot_tasks.append({
+            "id": task['id'],
+            "text": escape_markdown(text),
+            "answer": ans.strip().lower()
+        })
+
+with open('telegram_bot_tasks.json', 'w', encoding='utf-8') as f:
+    json.dump(bot_tasks, f, ensure_ascii=False, indent=2)
